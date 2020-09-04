@@ -2,6 +2,8 @@
 
 En este documento se listan algunos ejemplos para testear la integración entre Teradata y SAS
 
+Puede descargar la presentación del siguiente [enlace](Teradata_SAS_Best_Practices.pdf)
+
 ## Ejemplos con SAS/ACESS
 
 ### Business Understanding
