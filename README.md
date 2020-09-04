@@ -22,7 +22,7 @@ Se utiliza la fuente Account Statements para generar el análisis
 
 Paso 1: Creación de la Libname para conectar Teradata y SAS
 
-´´´
+~~~
 /* Connect to Database */
 
 LIBNAME TD TERADATA DATABASE=td01 SERVER='192.168.100.162' USER='td01' PASSWORD='td01';
@@ -35,11 +35,11 @@ Options sastrace=',,,ds' sastraceloc=saslog nostsuffix;
 
 Options dbidirectexec;
 
-´´´
+~~~
 
 Paso 2: Generación de la tabla 'util' con los resultados deseados
 
-´´´
+~~~
 proc sql;
 connect to teradata (server='192.168.100.162' user=td01 password=td01);
 execute (create multiset table util as (
@@ -47,7 +47,7 @@ select acct_no, as_of_dt_day, credit_limit, eom_bal_amount, cast(eom_bal_amount 
 from acct_statement where credit_util>1.25) with data) by teradata;
 execute (commit) by teradata;
 quit;
-´´´
+~~~
 
 
 ### Reporte 2: Análisis de Nivel de Uso de la TC
@@ -58,7 +58,7 @@ Se combinan Account Statement con Transaction Detail para calcular el nivel de u
 
 El script para generar la tabla con los resultados esperados, se muestra a continuación:
 
-´´´´
+~~~
 proc sql;
 connect to teradata (server='192.168.100.162' user=td01 password=td01);
 execute (create table td01.account_features as (
@@ -68,7 +68,7 @@ inner join (select acct_no, count(1) ntrans, sum(trans_amt) sum_trans_amt from t
 with data) by teradata;
 execute (commit) by teradata;
 quit;
-´´´´
+~~~
 
 
 ### Reporte 3: Análisis de Comportamiento de Pagos
@@ -79,7 +79,7 @@ Se utiliza la fuente Transaction Detail para generar el análisis
 
 El script para generar la tabla con los resultados esperados, se muestra a continuación:
 
-´´´´
+~~~
 proc sql;
 connect to teradata (server='192.168.100.162' user=td01 password=td01);
 execute (create table td01.pagos as (
@@ -94,7 +94,7 @@ inner join
 ) with data) by teradata;
 execute (commit) by teradata;
 quit;
-´´´´
+~~~
 
 
 
@@ -104,7 +104,7 @@ Objetivo: Calcular una columna que sea la suma de varias otras
 
 Se utiliza la tabla 'rand' que ha sido creada utilizando las funciones de generación de datos aleatorios en Teradata:
 
-´´´
+~~~
 create table td01.rand as (
 SELECT RANDOM(1,10000) AS id
 , CAST(RANDOM(0,99999) AS decimal(9,4))/99999 v1
@@ -134,19 +134,19 @@ SELECT RANDOM(1,10000) AS id
 , CAST(RANDOM(0,99999) AS decimal(9,4))/99999 v25
 FROM (select top 1000 * from sys_calendar.CALENDAR) as f
 ) with data;
-´´´
+~~~
 
 
 Paso 1: Creación de la Libname para conectar Teradata y SAS
 
-´´´
+~~~
 LIBNAME TD TERADATA DATABASE=td01 SERVER='192.168.100.162' USER='td01' PASSWORD='td01';
 Options sastrace=',,,ds' sastraceloc=saslog nostsuffix dbidirectexec;
-´´´
+~~~
 
 Paso 2: Script DS2 para ejecutar el proceso
 
-´´´
+~~~
 proc ds2 DS2ACCEL=YES;
 thread compute;
   method run();
@@ -164,7 +164,7 @@ data td.totals;
 enddata;
 run;
 quit;
-´´´
+~~~
 
 
 Copyright 2020 Teradata. All rights reserved.
