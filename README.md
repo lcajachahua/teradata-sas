@@ -62,9 +62,12 @@ El script para generar la tabla con los resultados esperados, se muestra a conti
 proc sql;
 connect to teradata (server='192.168.100.162' user=td01 password=td01);
 execute (create table td01.account_features as (
-select partyid, pa.acct_no, credit_limit, antig, ntrans, sum_trans_amt from party_acct pa 
-inner join (select acct_no, credit_limit, count(1) antig from acct_statement group by 1,2) a on pa.acct_no=a.acct_no
-inner join (select acct_no, count(1) ntrans, sum(trans_amt) sum_trans_amt from transaction_detail group by 1) t on pa.acct_no=t.acct_no) 
+select partyid, pa.acct_no, credit_limit, antig, ntrans, sum_trans_amt 
+from party_acct pa 
+inner join (select acct_no, credit_limit, count(1) antig 
+            from acct_statement group by 1,2) a on pa.acct_no=a.acct_no
+inner join (select acct_no, count(1) ntrans, sum(trans_amt) sum_trans_amt 
+            from transaction_detail group by 1) t on pa.acct_no=t.acct_no) 
 with data) by teradata;
 execute (commit) by teradata;
 quit;
